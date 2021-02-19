@@ -26,6 +26,8 @@ if(isset($_POST['id'])){
             echo "error";
         }
         $database->conn = null;
+        header("Location: ../index.php");
+
         exit();
     }
 }else {

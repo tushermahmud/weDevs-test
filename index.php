@@ -33,7 +33,6 @@ if(isset($_POST['title'])){
     $data = $todos->find_todos();
     $completed = $todos->completed();
     $rowCount = $todos->rowCount("SELECT * from todos");
-    print_r($rowCount)
 
 ?>
     <div class="main-section">
@@ -41,14 +40,17 @@ if(isset($_POST['title'])){
           <form action="" method="POST" autocomplete="off">
              <?php if(isset($_GET['mess']) && $_GET['mess'] == 'error'){ ?>
                 <input type="text" 
+                style="border: 0px"
                      name="title" 
                      style="border-color: #ff6666"
                      placeholder="This field is required" />
 
              <?php }else{ ?>
+                <span style="font-size:20px">&#x002C7;<span>
               <input type="text" 
+              style="border: 0px;width:90%"
                      name="title" 
-                     placeholder="&#x002C7; What do you need to do?" />
+                     placeholder=" What do you need to do?" />
              <?php } ?>
           </form>
        </div>
@@ -67,23 +69,35 @@ if(isset($_POST['title'])){
                     <span id="<?php echo $complete['id']; ?>"
                           class="remove-to-do">x</span>
                     <?php if($complete['checked']){ ?> 
-                        <input type="checkbox"
+                        <div style="display:flex">
+                            <div class="round">
+                            <input type="checkbox"
+                                id="checkbox"
                                class="check-box"
-                               data-todo-id ="<?php echo $complete['id']; ?>"
+                               data-todo-id ="<?php echo $complete['id'];?>"
                                checked />
-                        <h2 class="checked"><?php echo $complete['title'] ?></h2>
+                               <label for="checkbox" <?php echo $complete['id'];?></label>
+                            </div>
+                            <h2 class="checked todo-title" style="margin-left:20px"><?php echo $complete['title'] ?></h2>
+                        </div>
+                        
                     <?php }else { ?>
-                        <input type="checkbox"
-                               data-todo-id ="<?php echo $complete['id']; ?>"
-                               class="check-box" />
-                        <h2><?php echo $complete['title'] ?></h2>
+                        <div style="display:flex">
+                            <div class="round">
+                            <input type="checkbox"
+                                id="checkbox"
+                               class="check-box"
+                               data-todo-id ="<?php echo $complete['id'];?>"
+                               checked />
+                               <label for="checkbox" <?php echo $complete['id'];?></label>
+                            </div>
+                            <h2 class="todo-title" style="margin-left:20px"><?php echo $complete['title'] ?></h2>
+                        </div>
                     <?php } ?>
-                    <br>
-                    <small>created: <?php echo $complete['date_time'] ?></small> 
                 </div>
             <?php } ?>
             
-            <?php } else{?>
+            <?php } else if(isset($_GET['status']) && $_GET['status'] == 'all'){?>
                 <?php while($row = mysqli_fetch_array($data)) { ?>
                 <div class="todo-item">
                     <span id="<?php echo $row['id']; ?>"
@@ -100,8 +114,25 @@ if(isset($_POST['title'])){
                                class="check-box" />
                         <h2><?php echo $row['title'] ?></h2>
                     <?php } ?>
-                    <br>
-                    <small>created: <?php echo $row['date_time'] ?></small> 
+                </div>
+            <?php } ?>
+            <?php } else {?>
+                <?php while($row = mysqli_fetch_array($data)) { ?>
+                <div class="todo-item">
+                    <span id="<?php echo $row['id']; ?>"
+                          class="remove-to-do">x</span>
+                    <?php if($row['checked']){ ?> 
+                        <input type="checkbox"
+                               class="check-box"
+                               data-todo-id ="<?php echo $row['id']; ?>"
+                               checked />
+                        <h2 class="checked"><?php echo $row['title'] ?></h2>
+                    <?php }else { ?>
+                        <input type="checkbox"
+                               data-todo-id ="<?php echo $row['id']; ?>"
+                               class="check-box" />
+                        <h2><?php echo $row['title'] ?></h2>
+                    <?php } ?>
                 </div>
             <?php } ?>
             <?php }?>
@@ -109,8 +140,17 @@ if(isset($_POST['title'])){
         <div class="footer" style="display:flex; justify-content:space-between;padding:0px 20px">
             <span class="item-left" href=""><?php echo $rowCount. " items left"?></span>
             <span class="all-complete">
-               <a href="index.php" style="text-align:center" class="all">All</a> 
-               <a href="?status=completed" class="completed">Completed</a>
+                <?php if(isset($_GET['status']) && $_GET['status'] == 'all'){?>
+                    <a href="?status=all" style="text-align:center" class="all border">All</a> 
+                <?php } else {?>
+                    <a href="?status=all" style="text-align:center" class="all">All</a> 
+                <?php } ?>
+                <?php if(isset($_GET['status']) && $_GET['status'] == 'completed'){?>
+                    <a href="?status=completed" class="completed border">Completed</a>
+                <?php } else {?>
+                    <a href="?status=completed" class="completed">Completed</a>
+                <?php } ?>
+
             </span>
             <form method='POST'>
                 <input type="submit" value="Clear All" name="delete" style="border: 0px;background: transparent;">
@@ -137,9 +177,6 @@ if(isset($_POST['title'])){
                       }
                 );
             });
-            $('.all-complete .all').click(function(){
-                $('.all-complete').addClass('tusher');
-            });
 
             $(".check-box").click(function(e){
                 const id = $(this).attr('data-todo-id');
@@ -152,9 +189,9 @@ if(isset($_POST['title'])){
                           console.log(data)
                               const h2 = $(this).next();
                               if(data === '1'){
-                                  h2.removeClass('checked');
+                                  $('.todo-title').removeClass('checked');
                               }else {
-                                  h2.addClass('checked');
+                                $('.todo-title').addClass('checked');
                               }
                       }
                 );
