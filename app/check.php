@@ -14,7 +14,7 @@ if(isset($_POST['id'])){
         $uId = $todo['id'];
 
         $checked = $todo['checked'];
-
+        echo $todo['checked'];
 
         $uChecked = $checked ? 0 : 1;
 

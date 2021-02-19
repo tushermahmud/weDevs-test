@@ -69,29 +69,18 @@ if(isset($_POST['title'])){
                     <span id="<?php echo $complete['id']; ?>"
                           class="remove-to-do">x</span>
                     <?php if($complete['checked']){ ?> 
-                        <div style="display:flex">
-                            <div class="round">
-                            <input type="checkbox"
-                                id="checkbox"
+                        <input type="checkbox"
                                class="check-box"
-                               data-todo-id ="<?php echo $complete['id'];?>"
+                               data-todo-id ="<?php echo $complete['id']; ?>"
                                checked />
-                               <label for="checkbox" <?php echo $complete['id'];?></label>
-                            </div>
-                            <h2 class="checked todo-title" style="margin-left:20px"><?php echo $complete['title'] ?></h2>
-                        </div>
+                        <h2 class="checked"><?php echo $complete['title'] ?></h2>
                         
                     <?php }else { ?>
                         <div style="display:flex">
-                            <div class="round">
-                            <input type="checkbox"
-                                id="checkbox"
-                               class="check-box"
-                               data-todo-id ="<?php echo $complete['id'];?>"
-                               checked />
-                               <label for="checkbox" <?php echo $complete['id'];?></label>
-                            </div>
-                            <h2 class="todo-title" style="margin-left:20px"><?php echo $complete['title'] ?></h2>
+                        <input type="checkbox"
+                               data-todo-id ="<?php echo $complete['id']; ?>"
+                               class="check-box" />
+                        <h2><?php echo $complete['title'] ?></h2>
                         </div>
                     <?php } ?>
                 </div>
@@ -187,12 +176,14 @@ if(isset($_POST['title'])){
                       },
                       (data) => {
                           console.log(data)
+                          if(data != 'error'){
                               const h2 = $(this).next();
                               if(data === '1'){
-                                  $('.todo-title').removeClass('checked');
+                                  h2.removeClass('checked');
                               }else {
-                                $('.todo-title').addClass('checked');
+                                  h2.addClass('checked');
                               }
+                          }
                       }
                 );
             });
